@@ -4,9 +4,9 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class MenuModel extends Model
+class OrderItemModel extends Model
 {
-    protected $table            = 'menus';
+    protected $table            = 'order_items';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -14,13 +14,12 @@ class MenuModel extends Model
     protected $protectFields    = true;
 
     protected $allowedFields = [
-        'nama',
-        'kategori',
-        'deskripsi',
-        'harga',
-        'gambar',
-        'favorit',
-        'is_active',
+        'order_id',
+        'menu_id',
+        'menu_name',
+        'price',
+        'quantity',
+        'subtotal',
     ];
 
     protected $useTimestamps = true;

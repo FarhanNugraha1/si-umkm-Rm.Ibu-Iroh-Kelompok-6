@@ -96,7 +96,9 @@ function initActiveNavbar() {
     const sections = ['beranda', 'profil', 'menu-andalan', 'kontak'];
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
 
-    if (!sections.some(id => document.getElementById(id))) return;
+    const hasHashLinks = Array.from(navLinks).some(link => (link.getAttribute('href') || '').includes('#'));
+
+    if (!hasHashLinks || !sections.some(id => document.getElementById(id))) return;
 
     function setActiveNavLink() {
         let currentSection = '';

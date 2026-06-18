@@ -5,7 +5,7 @@
     <div class="login-left">
         <div>
             <h2>RM. Ibu Iroh</h2>
-            <small>SILAHKAN LOGIN ATAU REGISTRASI</small>
+            <small>LOGIN ADMIN WEBSITE</small>
         </div>
     </div>
 
@@ -18,27 +18,21 @@
             <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
         <?php endif; ?>
 
-        <h3 class="auth-title">Selamat Datang 👋</h3>
-        <p class="text-muted small">Masuk RM. Ibu Iroh</p>
+        <h3 class="auth-title">Login Admin 👋</h3>
+        <p class="text-muted small">Masuk untuk mengelola katalog menu RM. Ibu Iroh.</p>
 
         <form action="<?= base_url('auth/login_process') ?>" method="POST">
             <?= csrf_field() ?>
             <div class="mb-3">
-                <label class="form-label small fw-bold">USERNAME</label>
-                <input type="text" name="username" class="form-control" placeholder="Masukkan username" value="<?= old('username') ?>" required>
+                <label class="form-label small fw-bold">USERNAME / EMAIL</label>
+                <input type="text" name="username" class="form-control" placeholder="Masukkan username atau email" value="<?= old('username') ?>" required>
             </div>
             <div class="mb-4">
                 <label class="form-label small fw-bold">PASSWORD</label>
                 <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
             </div>
-            <button type="submit" class="btn-submit">Masuk</button>
+            <button type="submit" class="btn-submit">Masuk Dashboard</button>
         </form>
-
-        <div class="divider">
-            <span>atau</span>
-        </div>
-
-        <a href="<?= base_url('register') ?>" class="btn-register">Daftar Registrasi</a>
 
         <hr class="text-muted my-4">
         <div class="text-center small text-muted">

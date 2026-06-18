@@ -27,10 +27,9 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
 
         // Custom filters
-        'auth'     => \App\Filters\AuthFilter::class,
-        'guest'    => \App\Filters\GuestFilter::class,
-        'admin'    => \App\Filters\AdminFilter::class,
-        'customer' => \App\Filters\CustomerFilter::class,
+        'auth'  => \App\Filters\AuthFilter::class,
+        'guest' => \App\Filters\GuestFilter::class,
+        'admin' => \App\Filters\AdminFilter::class,
     ];
 
     public array $globals = [
@@ -53,9 +52,7 @@ class Filters extends BaseFilters
         'guest' => [
             'before' => [
                 'login',
-                'register',
                 'auth/login_process',
-                'auth/register_process',
             ],
         ],
 
@@ -66,9 +63,6 @@ class Filters extends BaseFilters
                 'dashboard/*',
                 'admin',
                 'admin/*',
-                'order',
-                'order/*',
-                'my-orders',
             ],
         ],
 
@@ -78,14 +72,6 @@ class Filters extends BaseFilters
                 'dashboard/*',
                 'admin',
                 'admin/*',
-            ],
-        ],
-
-        'customer' => [
-            'before' => [
-                'order',
-                'order/*',
-                'my-orders',
             ],
         ],
     ];

@@ -1,101 +1,103 @@
 <?= $this->extend('layouts/frontend') ?>
 
 <?= $this->section('content') ?>
+<?php
+    $profile = $profile ?? [];
+    $waNumber = preg_replace('/\D+/', '', (string) ($profile['whatsapp'] ?? '6282126834239'));
+    $waText = rawurlencode('Halo Admin RM. Ibu Iroh, saya ingin bertanya tentang menu yang tersedia.');
+?>
 <section class="hero-section" id="beranda">
     <div class="container py-4">
         <p class="eyebrow">Tradisi Rasa Sejak Dulu</p>
         <h1 class="hero-title font-serif">RM. Ibu Iroh</h1>
-        <p class="lead hero-text">Menyajikan hidangan istimewa dengan resep warisan keluarga. Segar, nikmat, dan penuh kenangan.</p>
+        <p class="lead hero-text">Menyajikan hidangan istimewa dengan resep keluarga. Segar, nikmat, dan penuh kenangan.</p>
         <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
-            <a href="#menu-andalan" class="btn btn-orange btn-lg px-4">Lihat Menu Kami</a>
-            <a href="<?= base_url('order') ?>" class="btn btn-outline-light btn-lg px-4">Pesan Online</a>
+            <a href="<?= base_url('menu') ?>" class="btn btn-orange btn-lg px-4">Lihat Menu</a>
+            <a href="<?= base_url('kontak') ?>" class="btn btn-outline-light btn-lg px-4">Kontak Kami</a>
         </div>
     </div>
 </section>
 
 <section class="section" id="profil">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-5 mb-4 mb-md-0">
+        <div class="row align-items-center g-4">
+            <div class="col-md-5">
                 <figure class="profile-image-wrap shadow-sm mb-0">
-                    <img 
-                        src="<?= base_url('images/contoh.png') ?>" 
-                        alt="Interior RM. Ibu Iroh" 
-                        class="profile-image"
-                    >
+                    <img src="<?= base_url('images/contoh.png') ?>" alt="Interior RM. Ibu Iroh" class="profile-image">
                 </figure>
             </div>
             <div class="col-md-7 ps-md-5">
+                <p class="eyebrow dark">Profil</p>
                 <h2 class="font-serif fw-bold fs-1 border-bottom border-2 border-warning pb-2 d-inline-block mb-4">Profil Perusahaan</h2>
-                <p>RM. Ibu Iroh didirikan berlandaskan pada kecintaan terhadap masakan tradisional nusantara. Berawal dari dapur kecil keluarga, kini kami hadir menyajikan berbagai racikan bumbu khas secara turun-temurun.</p>
-                <p class="mb-4">Komitmen kami adalah menghadirkan makanan berkelas dengan bahan-bahan yang higienis, berkualitas, dan segar setiap harinya.</p>
-
-                <div class="row g-3 text-center">
-                    <div class="col-4"><div class="bg-white p-3 rounded shadow-sm">✨<br><strong>Higienis</strong></div></div>
-                    <div class="col-4"><div class="bg-white p-3 rounded shadow-sm">🌿<br><strong>Bahan Segar</strong></div></div>
-                    <div class="col-4"><div class="bg-white p-3 rounded shadow-sm">👩‍🍳<br><strong>Resep Asli</strong></div></div>
+                <p><?= esc($profile['sejarah'] ?? '') ?></p>
+                <div class="profile-info-grid mt-4">
+                    <div class="profile-info-card"><i class="bi bi-geo-alt"></i><span>Alamat</span><strong><?= esc($profile['alamat'] ?? '-') ?></strong></div>
+                    <div class="profile-info-card"><i class="bi bi-clock"></i><span>Jam Operasional</span><strong><?= esc($profile['jam_operasional'] ?? '-') ?></strong></div>
                 </div>
+                <a href="<?= base_url('profil') ?>" class="btn btn-outline-dark mt-4">Baca Profil Lengkap</a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section bg-soft" id="menu-andalan">
+<section class="section bg-soft" id="menu">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="font-serif fw-bold fs-1">Menu Andalan</h2>
-            <p class="text-muted">Sajian istimewa yang paling digemari pelanggan kami</p>
+            <p class="eyebrow dark">Menu</p>
+            <h2 class="font-serif fw-bold fs-1">Menu Pilihan</h2>
+            <p class="text-muted">Daftar menu diambil langsung dari database dan otomatis mengikuti kategori.</p>
         </div>
 
-        <div class="row g-4 justify-content-center">
-            <?php if (! empty($menus)): ?>
-                <?php foreach ($menus as $index => $menu): ?>
-                    <div class="col-md-4">
-                        <div class="card card-menu h-100 bg-white shadow-sm position-relative">
-                            <?php if (! empty($menu['favorit'])): ?>
-                                <span class="badge btn-orange position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill shadow-sm" style="z-index: 10;">⭐ Favorit</span>
-                            <?php endif; ?>
-
-                            <div class="img-container">
-                                <?php if (! empty($menu['gambar'])): ?>
-                                    <img src="<?= base_url('uploads/menu/' . $menu['gambar']) ?>" alt="<?= esc($menu['nama']) ?>">
-                                <?php else: ?>
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted small">
-                                        <span>Gambar Makanan <?= $index + 1 ?></span>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-
-                            <div class="card-body p-4 d-flex flex-column justify-content-between">
-                                <div>
-                                    <?php if (! empty($menu['kategori'])): ?>
-                                        <small class="text-uppercase fw-bold" style="color:#A0522D;"><?= esc($menu['kategori']) ?></small>
-                                    <?php endif; ?>
-                                    <h4 class="font-serif fw-bold mb-2 mt-1"><?= esc($menu['nama']) ?></h4>
-                                    <p class="card-text text-muted small mb-4" style="min-height: 40px;"><?= esc($menu['deskripsi'] ?: 'Menu rumah makan siap dipesan.') ?></p>
+        <?php if (! empty($groupedMenus)): ?>
+            <?php foreach ($groupedMenus as $category => $items): ?>
+                <?php if (! empty($items)): ?>
+                    <div class="menu-category-block">
+                        <div class="category-heading">
+                            <h3><?= esc($category) ?></h3>
+                            <span><?= count($items) ?> menu</span>
+                        </div>
+                        <div class="row g-4">
+                            <?php foreach (array_slice($items, 0, 3) as $menu): ?>
+                                <div class="col-md-4">
+                                    <?= view('home/partials/menu_card', ['menu' => $menu, 'profile' => $profile]) ?>
                                 </div>
-                                <div>
-                                    <h5 class="fw-bold mb-3 text-success">Rp <?= number_format($menu['harga'], 0, ',', '.') ?></h5>
-                                    <a href="<?= base_url('order') ?>" class="btn btn-outline-dark w-100 py-2 rounded-3 fw-semibold">Pesan Sekarang</a>
-                                </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-12">
-                    <div class="empty-state">Belum ada menu. Login sebagai admin untuk menambahkan menu.</div>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="empty-state">Belum ada menu. Login sebagai admin untuk menambahkan menu.</div>
+        <?php endif; ?>
+
+        <div class="text-center mt-4">
+            <a href="<?= base_url('menu') ?>" class="btn btn-orange btn-lg px-5">Lihat Semua Menu</a>
         </div>
     </div>
 </section>
 
-<section class="bg-medium-green text-white text-center py-5" id="kontak">
-    <div class="container py-3">
-        <h2 class="font-serif mb-3">Siap Mencicipi Kelezatan Hidangan Kami?</h2>
-        <p class="mb-4">Buat pesanan online atau hubungi kami untuk konfirmasi pemesanan.</p>
-        <a href="<?= base_url('order') ?>" class="btn btn-orange btn-lg px-5 rounded-pill shadow">Pesan Online</a>
+<section class="section contact-preview" id="kontak">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <p class="eyebrow dark">Kontak</p>
+                <h2 class="font-serif fw-bold fs-1">Hubungi RM. Ibu Iroh</h2>
+                <p class="text-muted mb-4">Lihat lokasi kami melalui Google Maps atau langsung hubungi admin melalui WhatsApp.</p>
+                <div class="contact-list">
+                    <div><i class="bi bi-telephone"></i><span><?= esc($profile['telepon'] ?? '-') ?></span></div>
+                    <div><i class="bi bi-geo-alt"></i><span><?= esc($profile['alamat'] ?? '-') ?></span></div>
+                </div>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="https://wa.me/<?= esc($waNumber) ?>?text=<?= $waText ?>" target="_blank" class="btn btn-orange btn-lg px-4"><i class="bi bi-whatsapp me-2"></i>WhatsApp Admin</a>
+                    <a href="<?= base_url('kontak') ?>" class="btn btn-outline-dark btn-lg px-4">Detail Kontak</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="map-frame shadow-sm">
+                    <iframe src="<?= esc($profile['map_embed_url'] ?? '') ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 <?= $this->endSection() ?>

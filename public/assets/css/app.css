@@ -539,3 +539,236 @@ body {
         padding: 3.5rem 0;
     }
 }
+
+/* ==== Profile/Menu/Contact update ==== */
+.page-hero,
+.compact-page-hero {
+    background: var(--dark-green);
+    color: #fff;
+    text-align: center;
+    padding: 4rem 0 3.5rem;
+}
+
+.page-hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    font-weight: 700;
+    margin-bottom: .75rem;
+}
+
+.page-hero p:last-child {
+    max-width: 720px;
+    margin: 0 auto;
+    color: rgba(255,255,255,.82);
+}
+
+.profile-image-tall {
+    height: 430px;
+}
+
+.profile-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.profile-info-card,
+.profile-detail-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+}
+
+.profile-info-card i,
+.profile-detail-item i {
+    color: var(--orange);
+    font-size: 1.4rem;
+}
+
+.profile-info-card span,
+.profile-detail-item span {
+    display: block;
+    color: var(--muted);
+    font-size: .82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-top: 8px;
+}
+
+.profile-info-card strong,
+.profile-detail-item strong {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-green);
+    line-height: 1.5;
+}
+
+.profile-detail-list {
+    display: grid;
+    gap: 14px;
+}
+
+.profile-detail-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.category-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-green);
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: 800;
+}
+
+.category-pill:hover {
+    color: #fff;
+    background: var(--orange);
+    border-color: var(--orange);
+}
+
+.category-pill span {
+    background: rgba(160,82,45,.12);
+    color: var(--orange);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: .78rem;
+}
+
+.menu-category-block {
+    margin-bottom: 3.5rem;
+    scroll-margin-top: 96px;
+}
+
+.menu-category-block:last-child {
+    margin-bottom: 0;
+}
+
+.category-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .75rem;
+}
+
+.category-heading h2,
+.category-heading h3 {
+    margin: 0;
+    font-weight: 800;
+}
+
+.category-heading span {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.menu-category-label {
+    color: var(--orange);
+}
+
+.contact-preview {
+    background: #fff;
+}
+
+.contact-list {
+    display: grid;
+    gap: 12px;
+}
+
+.contact-list div {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.contact-list i {
+    color: var(--orange);
+    font-size: 1.2rem;
+    margin-top: 1px;
+}
+
+.contact-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 10px 24px rgba(42,34,25,.05);
+}
+
+.map-frame {
+    width: 100%;
+    min-height: 340px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ddd;
+    border: 1px solid var(--border);
+}
+
+.map-frame iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+    border: 0;
+    display: block;
+}
+
+.contact-map-frame,
+.contact-map-frame iframe {
+    min-height: 500px;
+}
+
+.wa-float {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    z-index: 1040;
+    background: #25D366;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 50%;
+    box-shadow: 0 10px 24px rgba(0,0,0,.22);
+    font-size: 1.65rem;
+}
+
+.wa-float:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .profile-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .contact-map-frame,
+    .contact-map-frame iframe {
+        min-height: 360px;
+    }
+}

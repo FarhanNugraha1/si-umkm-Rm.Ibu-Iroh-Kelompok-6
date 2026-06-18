@@ -9,8 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="<?= base_url('assets/css/app.css') ?>" rel="stylesheet">
 </head>
-<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="100">
-    <nav class="navbar navbar-expand-lg navbar-dark site-navbar sticky-top shadow">
+<?php
+    $profile = $profile ?? [];
+    $whatsapp = preg_replace('/\D+/', '', (string) ($profile['whatsapp'] ?? '6282126834239'));
+    $waText = rawurlencode('Halo Admin RM. Ibu Iroh, saya ingin bertanya tentang menu yang tersedia.');
+    $currentSegment = service('uri')->getSegment(1) ?: 'beranda';
+?>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark site-navbar sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="<?= base_url('/') ?>">RM. Ibu Iroh</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,22 +25,16 @@
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-lg-center gap-lg-3">
-                    <li class="nav-item"><a class="nav-link active" href="<?= base_url('/') ?>#beranda">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url('/') ?>#profil">Profil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url('/') ?>#menu-andalan">Menu Andalan</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= base_url('/') ?>#kontak">Kontak</a></li>
+                    <li class="nav-item"><a class="nav-link <?= $currentSegment === 'beranda' ? 'active' : '' ?>" href="<?= base_url('/') ?>">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link <?= in_array($currentSegment, ['profil', 'tentang-kami'], true) ? 'active' : '' ?>" href="<?= base_url('profil') ?>">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link <?= $currentSegment === 'menu' ? 'active' : '' ?>" href="<?= base_url('menu') ?>">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link <?= $currentSegment === 'kontak' ? 'active' : '' ?>" href="<?= base_url('kontak') ?>">Kontak</a></li>
 
-                    <?php if (session()->get('isLoggedIn')): ?>
-                        <?php if (session()->get('role') === 'admin'): ?>
-                            <li class="nav-item"><a class="btn btn-orange px-4 rounded-3" href="<?= base_url('dashboard') ?>">Dashboard</a></li>
-                        <?php else: ?>
-                            <li class="nav-item"><a class="nav-link" href="<?= base_url('my-orders') ?>">Pesanan Saya</a></li>
-                            <li class="nav-item"><a class="btn btn-orange px-4 rounded-3" href="<?= base_url('order') ?>">Pesan</a></li>
-                        <?php endif; ?>
+                    <?php if (session()->get('isLoggedIn') && session()->get('role') === 'admin'): ?>
+                        <li class="nav-item"><a class="btn btn-orange px-4 rounded-3" href="<?= base_url('dashboard') ?>">Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?= base_url('logout') ?>">Logout</a></li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="btn btn-orange px-4 rounded-3" href="<?= base_url('login') ?>">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="<?= base_url('register') ?>">Daftar</a></li>
+                        <li class="nav-item"><a class="btn btn-orange px-4 rounded-3" href="<?= base_url('login') ?>">Login Admin</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -66,26 +66,30 @@
         <?= $this->renderSection('content') ?>
     </main>
 
+    <a href="https://wa.me/<?= esc($whatsapp) ?>?text=<?= $waText ?>" target="_blank" rel="noopener" class="wa-float" aria-label="Chat WhatsApp Admin">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
     <footer class="site-footer small">
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-4">
-                    <h5 class="font-serif fw-bold mb-3">RM. Ibu Iroh</h5>
-                    <p class="text-white-50">Cita rasa otentik dengan nuansa tradisional yang khas. Melayani pesanan harian dan keluarga.</p>
+                    <h5 class="font-serif fw-bold mb-3"><?= esc($profile['nama_restoran'] ?? 'RM. Ibu Iroh') ?></h5>
+                    <p class="text-white-50">Website ini menampilkan katalog menu, profil rumah makan, informasi kontak, dan lokasi RM. Ibu Iroh.</p>
                 </div>
                 <div class="col-md-4">
                     <h5 class="font-serif fw-bold mb-3">Tautan Cepat</h5>
                     <ul class="list-unstyled text-white-50">
-                        <li class="mb-1"><a href="<?= base_url('/') ?>#profil">Tentang Kami</a></li>
-                        <li class="mb-1"><a href="<?= base_url('/') ?>#menu-andalan">Menu Andalan</a></li>
-                        <li><a href="<?= base_url('order') ?>">Pemesanan</a></li>
+                        <li class="mb-1"><a href="<?= base_url('profil') ?>">Tentang Kami</a></li>
+                        <li class="mb-1"><a href="<?= base_url('menu') ?>">Menu</a></li>
+                        <li><a href="<?= base_url('kontak') ?>">Kontak</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5 class="font-serif fw-bold mb-3">Kontak</h5>
-                    <p class="text-white-50 mb-1">Alamat: Subang, Jawa Barat</p>
-                    <p class="text-white-50 mb-1">Telepon: +62 812-3456-7890</p>
-                    <p class="text-white-50">Jam Buka: 09:00 - 21:00 WIB</p>
+                    <p class="text-white-50 mb-1">Alamat: <?= esc($profile['alamat'] ?? 'Jl. Raya Gambarsari, Pagaden, Subang') ?></p>
+                    <p class="text-white-50 mb-1">Telepon: <?= esc($profile['telepon'] ?? '+6282126834239') ?></p>
+                    <p class="text-white-50">Jam Buka: <?= esc($profile['jam_operasional'] ?? '07:30 - 19:30 WIB') ?></p>
                 </div>
             </div>
             <hr class="border-secondary mt-4">

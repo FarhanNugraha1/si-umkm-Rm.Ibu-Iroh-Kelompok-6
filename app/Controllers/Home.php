@@ -3,138 +3,108 @@
 namespace App\Controllers;
 
 use App\Models\MenuModel;
-use App\Models\OrderItemModel;
-use App\Models\OrderModel;
-use App\Models\UserModel;
+use App\Models\RestaurantProfileModel;
 
 class Home extends BaseController
 {
     protected MenuModel $menuModel;
-    protected OrderModel $orderModel;
-    protected OrderItemModel $orderItemModel;
+    protected RestaurantProfileModel $profileModel;
 
     public function __construct()
     {
-        $this->menuModel      = new MenuModel();
-        $this->orderModel     = new OrderModel();
-        $this->orderItemModel = new OrderItemModel();
+        $this->menuModel    = new MenuModel();
+        $this->profileModel = new RestaurantProfileModel();
     }
 
     public function index()
     {
-        $data = [
-            'title' => 'RM. Ibu Iroh | Pemesanan & Profil',
-            'menus' => $this->menuModel
-                ->where('is_active', 1)
-                ->orderBy('favorit', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->findAll(),
-        ];
+        $profile = $this->getProfile();
+        $menus   = $this->getActiveMenus();
 
-        return view('home/index', $data);
+        return view('home/index', [
+            'title'        => 'RM. Ibu Iroh | Katalog Menu',
+            'profile'      => $profile,
+            'menus'        => array_slice($menus, 0, 6),
+            'groupedMenus' => $this->groupMenusByCategory($menus),
+        ]);
     }
 
-    public function order()
+    public function profile()
     {
-        $userModel = new UserModel();
-        $user      = $userModel->find((int) session()->get('user_id'));
-
-        $data = [
-            'title' => 'Pemesanan | RM. Ibu Iroh',
-            'user'  => $user,
-            'menus' => $this->menuModel
-                ->where('is_active', 1)
-                ->orderBy('kategori', 'ASC')
-                ->orderBy('nama', 'ASC')
-                ->findAll(),
-        ];
-
-        return view('home/order', $data);
+        return view('home/profile', [
+            'title'   => 'Profil | RM. Ibu Iroh',
+            'profile' => $this->getProfile(),
+        ]);
     }
 
-    public function saveOrder()
+    public function menu()
     {
-        $rules = [
-            'menu_id'        => 'required|integer',
-            'quantity'       => 'required|integer|greater_than[0]',
-            'service_type'   => 'required|in_list[pickup,delivery]',
-            'payment_method' => 'required|in_list[cash,transfer,qris]',
-            'customer_phone' => 'required|min_length[10]',
-        ];
+        $menus = $this->getActiveMenus();
 
-        if ($this->request->getPost('service_type') === 'delivery') {
-            $rules['customer_address'] = 'required|min_length[5]';
-        }
+        return view('home/menu', [
+            'title'        => 'Menu | RM. Ibu Iroh',
+            'profile'      => $this->getProfile(),
+            'menus'        => $menus,
+            'groupedMenus' => $this->groupMenusByCategory($menus),
+        ]);
+    }
 
-        if (! $this->validate($rules)) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', $this->validator->listErrors());
-        }
+    public function contact()
+    {
+        return view('home/contact', [
+            'title'   => 'Kontak | RM. Ibu Iroh',
+            'profile' => $this->getProfile(),
+        ]);
+    }
 
-        $menu = $this->menuModel
+    private function getActiveMenus(): array
+    {
+        return $this->menuModel
             ->where('is_active', 1)
-            ->find((int) $this->request->getPost('menu_id'));
-
-        if (! $menu) {
-            return redirect()->back()->with('error', 'Menu tidak ditemukan atau sedang tidak aktif.');
-        }
-
-        $quantity   = (int) $this->request->getPost('quantity');
-        $subtotal   = (int) $menu['harga'] * $quantity;
-        $orderCode  = 'ORD-' . date('Ymd-His') . '-' . session()->get('user_id');
-
-        $db = db_connect();
-        $db->transStart();
-
-        $this->orderModel->insert([
-            'user_id'          => (int) session()->get('user_id'),
-            'order_code'       => $orderCode,
-            'customer_name'    => session()->get('nama_lengkap') ?: session()->get('username'),
-            'customer_phone'   => $this->request->getPost('customer_phone'),
-            'customer_address' => $this->request->getPost('customer_address'),
-            'service_type'     => $this->request->getPost('service_type'),
-            'payment_method'   => $this->request->getPost('payment_method'),
-            'payment_status'   => 'unpaid',
-            'total_price'      => $subtotal,
-            'status'           => 'pending',
-            'notes'            => $this->request->getPost('notes'),
-        ]);
-
-        $orderId = (int) $this->orderModel->getInsertID();
-
-        $this->orderItemModel->insert([
-            'order_id'  => $orderId,
-            'menu_id'   => (int) $menu['id'],
-            'menu_name' => $menu['nama'],
-            'price'     => (int) $menu['harga'],
-            'quantity'  => $quantity,
-            'subtotal'  => $subtotal,
-        ]);
-
-        $db->transComplete();
-
-        if (! $db->transStatus()) {
-            return redirect()->back()->withInput()->with('error', 'Pesanan gagal dibuat. Silakan coba lagi.');
-        }
-
-        return redirect()->to(base_url('my-orders'))
-            ->with('success', 'Pesanan berhasil dibuat dengan kode ' . $orderCode . '.');
+            ->orderBy('kategori', 'ASC')
+            ->orderBy('favorit', 'DESC')
+            ->orderBy('nama', 'ASC')
+            ->findAll();
     }
 
-    public function myOrders()
+    private function groupMenusByCategory(array $menus): array
     {
-        $orders = $this->orderModel->getOrdersWithUser((int) session()->get('user_id'));
-
-        foreach ($orders as &$order) {
-            $order['items'] = $this->orderItemModel->where('order_id', $order['id'])->findAll();
-        }
-
-        $data = [
-            'title'  => 'Pesanan Saya | RM. Ibu Iroh',
-            'orders' => $orders,
+        $categories = [
+            'Makanan' => [],
+            'Minuman' => [],
+            'Spesial' => [],
         ];
 
-        return view('home/my_orders', $data);
+        foreach ($menus as $menu) {
+            $kategori = $menu['kategori'] ?? 'Makanan';
+
+            if (! array_key_exists($kategori, $categories)) {
+                $categories[$kategori] = [];
+            }
+
+            $categories[$kategori][] = $menu;
+        }
+
+        return $categories;
+    }
+
+    private function getProfile(): array
+    {
+        $profile = $this->profileModel->first();
+
+        if ($profile) {
+            return $profile;
+        }
+
+        return [
+            'nama_restoran'   => 'RM. Ibu Iroh',
+            'sejarah'         => 'Rumah Makan Ibu Iroh menghadirkan cita rasa masakan rumahan khas Sunda dengan bahan segar dan pelayanan ramah.',
+            'alamat'          => 'Jl. Raya Gambarsari, Gambarsari, Kec. Pagaden, Kabupaten Subang, Jawa Barat 41253',
+            'jam_operasional' => 'Setiap hari, 07:30 - 19:30 WIB',
+            'telepon'         => '+6282126834239',
+            'whatsapp'        => '6282126834239',
+            'map_embed_url'   => 'https://www.google.com/maps?q=Jl.%20Raya%20Gambarsari%2C%20Gambarsari%2C%20Pagaden%2C%20Subang%2C%20Jawa%20Barat%2041253&output=embed',
+            'map_link'        => 'https://www.google.com/maps/search/?api=1&query=Jl.%20Raya%20Gambarsari%2C%20Gambarsari%2C%20Pagaden%2C%20Subang%2C%20Jawa%20Barat%2041253',
+        ];
     }
 }

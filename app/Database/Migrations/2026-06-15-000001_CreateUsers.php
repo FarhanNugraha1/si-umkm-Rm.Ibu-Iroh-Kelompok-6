@@ -43,7 +43,7 @@ class CreateUsers extends Migration
             'role' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
-                'default'    => 'user',
+                'default'    => 'admin',
             ],
             'created_at' => [
                 'type' => 'DATETIME',

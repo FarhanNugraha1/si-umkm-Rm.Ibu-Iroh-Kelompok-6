@@ -9,6 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="<?= base_url('assets/css/admin.css') ?>" rel="stylesheet">
 </head>
+<?php
+    $uri = service('uri');
+    $segment1 = $uri->getSegment(1);
+    $segment2 = $uri->getSegment(2);
+    $adminName = session()->get('nama_lengkap') ?: 'Administrator';
+?>
 <body class="admin-body">
     <button class="admin-menu-toggle d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebar">
         <i class="bi bi-list"></i>
@@ -19,28 +25,35 @@
             <div class="admin-avatar">RI</div>
             <div>
                 <div class="fw-bold text-white">RM. Ibu Iroh</div>
-                <small>Administrator</small>
+                <small><?= esc($adminName) ?></small>
             </div>
         </div>
 
         <div class="admin-nav-title">Utama</div>
         <nav class="admin-nav">
-            <a href="<?= base_url('dashboard') ?>" class="<?= service('uri')->getSegment(1) === 'dashboard' && service('uri')->getSegment(2) === '' ? 'active' : '' ?>">
+            <a href="<?= base_url('dashboard') ?>" class="<?= $segment1 === 'dashboard' && $segment2 === '' ? 'active' : '' ?>">
                 <i class="bi bi-grid-1x2-fill"></i> Dashboard
             </a>
-            <a href="<?= base_url('dashboard/menus') ?>" class="<?= service('uri')->getSegment(2) === 'menus' ? 'active' : '' ?>">
+            <a href="<?= base_url('dashboard/menus') ?>" class="<?= $segment2 === 'menus' ? 'active' : '' ?>">
                 <i class="bi bi-egg-fried"></i> Manajemen Menu
             </a>
-            <a href="<?= base_url('dashboard/orders') ?>" class="<?= service('uri')->getSegment(2) === 'orders' ? 'active' : '' ?>">
-                <i class="bi bi-receipt"></i> Pesanan
+        </nav>
+
+        <div class="admin-nav-title">Pengaturan Website</div>
+        <nav class="admin-nav">
+            <a href="<?= base_url('dashboard/company-profile') ?>" class="<?= $segment2 === 'company-profile' ? 'active' : '' ?>">
+                <i class="bi bi-building-fill-gear"></i> Profil Perusahaan
             </a>
-            <a href="<?= base_url('dashboard/customers') ?>" class="<?= service('uri')->getSegment(2) === 'customers' ? 'active' : '' ?>">
-                <i class="bi bi-people"></i> Pelanggan
+            <a href="<?= base_url('dashboard/contact-settings') ?>" class="<?= $segment2 === 'contact-settings' ? 'active' : '' ?>">
+                <i class="bi bi-geo-alt-fill"></i> Kontak & Maps
             </a>
         </nav>
 
         <div class="admin-nav-title">Akun</div>
         <nav class="admin-nav">
+            <a href="<?= base_url('dashboard/profile') ?>" class="<?= $segment2 === 'profile' ? 'active' : '' ?>">
+                <i class="bi bi-person-circle"></i> Profil Admin
+            </a>
             <a href="<?= base_url('/') ?>"><i class="bi bi-house"></i> Lihat Website</a>
             <a href="<?= base_url('logout') ?>"><i class="bi bi-box-arrow-right"></i> Logout</a>
         </nav>

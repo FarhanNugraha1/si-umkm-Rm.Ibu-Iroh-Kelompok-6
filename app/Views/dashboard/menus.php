@@ -14,7 +14,7 @@
         <table class="table admin-table align-middle">
             <thead>
                 <tr>
-                    <th>Menu</th>
+                    <th>Foto & Nama Menu</th>
                     <th>Kategori</th>
                     <th>Harga</th>
                     <th>Status</th>
@@ -29,18 +29,18 @@
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="thumb">
                                         <?php if (! empty($menu['gambar'])): ?>
-                                            <img src="<?= base_url('uploads/menu/' . $menu['gambar']) ?>" alt="">
+                                            <img src="<?= base_url('uploads/menu/' . $menu['gambar']) ?>" alt="<?= esc($menu['nama']) ?>">
                                         <?php else: ?>
                                             <i class="bi bi-egg-fried"></i>
                                         <?php endif; ?>
                                     </div>
                                     <div>
                                         <strong><?= esc($menu['nama']) ?></strong>
-                                        <small class="d-block text-muted"><?= esc($menu['deskripsi']) ?></small>
+                                        <small class="d-block text-muted"><?= esc($menu['deskripsi'] ?: 'Tidak ada deskripsi') ?></small>
                                     </div>
                                 </div>
                             </td>
-                            <td><?= esc($menu['kategori']) ?></td>
+                            <td><span class="category-badge"><?= esc($menu['kategori']) ?></span></td>
                             <td>Rp <?= number_format($menu['harga'], 0, ',', '.') ?></td>
                             <td>
                                 <?php if ((int) $menu['is_active'] === 1): ?>
@@ -53,7 +53,7 @@
                                 <?php endif; ?>
                             </td>
                             <td class="text-end">
-                                <a href="<?= base_url('dashboard/menus/edit/' . $menu['id']) ?>" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="<?= base_url('dashboard/menus/edit/' . $menu['id']) ?>" class="btn btn-sm btn-outline-primary">Ubah</a>
                                 <form action="<?= base_url('dashboard/menus/delete/' . $menu['id']) ?>" method="post" class="d-inline" onsubmit="return confirm('Hapus menu ini?')">
                                     <?= csrf_field() ?>
                                     <button class="btn btn-sm btn-outline-danger" type="submit">Hapus</button>

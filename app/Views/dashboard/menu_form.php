@@ -4,42 +4,43 @@
 <?php
     $isEdit = $mode === 'edit';
     $action = $isEdit ? base_url('dashboard/menus/update/' . $menu['id']) : base_url('dashboard/menus/store');
+    $categories = $categories ?? ['Makanan', 'Minuman', 'Spesial'];
 ?>
 <div class="admin-page-header">
     <div>
         <p class="admin-eyebrow">Menu</p>
-        <h1><?= $isEdit ? 'Edit Menu' : 'Tambah Menu' ?></h1>
+        <h1><?= $isEdit ? 'Ubah Menu' : 'Tambah Menu' ?></h1>
     </div>
     <a href="<?= base_url('dashboard/menus') ?>" class="btn btn-light">Kembali</a>
 </div>
 
-<div class="row">
+<div class="row g-4">
     <div class="col-xl-8">
         <form action="<?= $action ?>" method="post" enctype="multipart/form-data" class="admin-card form-admin">
             <?= csrf_field() ?>
             <div class="row g-4">
                 <div class="col-md-7">
-                    <label class="form-label fw-bold">Nama Menu</label>
+                    <label class="form-label fw-bold">Nama Menu <span class="text-danger">*</span></label>
                     <input type="text" name="nama" class="form-control" value="<?= old('nama') ?: esc($menu['nama'] ?? '') ?>" placeholder="Contoh: Pindang Ikan Mas" required>
                 </div>
                 <div class="col-md-5">
-                    <label class="form-label fw-bold">Kategori</label>
+                    <label class="form-label fw-bold">Kategori <span class="text-danger">*</span></label>
                     <?php $selectedKategori = old('kategori') ?: ($menu['kategori'] ?? ''); ?>
                     <select name="kategori" class="form-select" required>
                         <option value="">Pilih kategori</option>
-                        <?php foreach (['Makanan Utama', 'Sup & Berkuah', 'Sayuran', 'Minuman', 'Paket'] as $kategori): ?>
-                            <option value="<?= $kategori ?>" <?= $selectedKategori === $kategori ? 'selected' : '' ?>><?= $kategori ?></option>
+                        <?php foreach ($categories as $kategori): ?>
+                            <option value="<?= esc($kategori) ?>" <?= $selectedKategori === $kategori ? 'selected' : '' ?>><?= esc($kategori) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Harga</label>
-                    <input type="number" name="harga" class="form-control" value="<?= old('harga') ?: esc($menu['harga'] ?? '') ?>" placeholder="30000" required>
+                    <label class="form-label fw-bold">Harga <span class="text-danger">*</span></label>
+                    <input type="number" name="harga" min="1" class="form-control" value="<?= old('harga') ?: esc($menu['harga'] ?? '') ?>" placeholder="30000" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Foto Menu</label>
-                    <input type="file" name="gambar" class="form-control" accept="image/*">
-                    <small class="text-muted">JPG, PNG, WEBP maksimal 2MB.</small>
+                    <label class="form-label fw-bold">Foto Menu <?= $isEdit ? '' : '<span class="text-danger">*</span>' ?></label>
+                    <input type="file" name="gambar" class="form-control" accept="image/jpg,image/jpeg,image/png,image/webp" <?= $isEdit ? '' : 'required' ?>>
+                    <small class="text-muted"><?= $isEdit ? 'Kosongkan jika foto tidak diganti.' : 'JPG, PNG, WEBP maksimal 2MB.' ?></small>
                 </div>
                 <div class="col-12">
                     <label class="form-label fw-bold">Deskripsi</label>
@@ -67,10 +68,22 @@
                 <?php endif; ?>
                 <div class="col-12 d-flex justify-content-end gap-3">
                     <a href="<?= base_url('dashboard/menus') ?>" class="btn btn-light btn-lg">Batal</a>
-                    <button type="submit" class="btn btn-admin-primary btn-lg"><?= $isEdit ? 'Simpan Perubahan' : 'Simpan Menu' ?></button>
+                    <button type="submit" class="btn btn-admin-primary btn-lg">Simpan</button>
                 </div>
             </div>
         </form>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="admin-card helper-card">
+            <h5 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Alur Admin</h5>
+            <ol class="small mb-0 ps-3">
+                <li>Pilih aksi tambah atau ubah menu.</li>
+                <li>Isi nama, harga, kategori, dan foto.</li>
+                <li>Tekan tombol <strong>Simpan</strong>.</li>
+                <li>Sistem memvalidasi data dan menyimpan ke database.</li>
+            </ol>
+        </div>
     </div>
 </div>
 <?= $this->endSection() ?>
